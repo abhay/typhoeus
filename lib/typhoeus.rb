@@ -12,8 +12,6 @@ require 'typhoeus/remote_proxy_object'
 require 'typhoeus/response'
 
 module Typhoeus
-  VERSION = "0.0.15"
-  
   def self.easy_object_pool
     @easy_objects ||= []
   end
