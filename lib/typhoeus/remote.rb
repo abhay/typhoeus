@@ -267,7 +267,7 @@ module Typhoeus
 
     def get_memcache_response_key(remote_method_name, args)
       result = "#{remote_method_name.to_s}-#{args.to_s}"
-      (Digest::SHA2.new << result).to_s
+      (Digest::SHA256.new << result).to_s
     end
     
     def cache=(cache)
