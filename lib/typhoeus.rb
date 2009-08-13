@@ -1,4 +1,4 @@
-$LOAD_PATH.unshift(File.dirname(__FILE__)) unless $LOAD_PATH.include?(File.dirname(__FILE__))
+[File.expand_path(File.dirname(__FILE__)), File.join(File.dirname(__FILE__), %w[.. ext])].each { |p| $:.unshift(p) unless $:.include?(p) }
 
 require 'cgi'
 require 'digest/sha2'
