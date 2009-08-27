@@ -1,6 +1,8 @@
 module Typhoeus
   class Easy
     attr_reader :response_body, :response_header, :method, :headers, :url
+    attr_accessor :start_time
+
     CURLINFO_STRING = 1048576
     OPTION_VALUES = {
       :CURLOPT_URL            => 10002,
@@ -86,6 +88,7 @@ module Typhoeus
         self.post_data = ""
       elsif method == :put
         set_option(OPTION_VALUES[:CURLOPT_UPLOAD], 1)
+        self.request_body = "" unless @request_body
       else
         set_option(OPTION_VALUES[:CURLOPT_CUSTOMREQUEST], "DELETE")
       end
@@ -102,15 +105,18 @@ module Typhoeus
         value = params[k]
         if value.is_a? Hash
           value.keys.collect {|sk| CGI.escape("#{k}[#{sk}]") + "=" + CGI.escape(value[sk].to_s)}
+        elsif value.is_a? Array
+          key = CGI.escape(k.to_s)
+          value.collect { |v| "#{key}=#{CGI.escape(v.to_s)}" }.join('&')
         else
           "#{CGI.escape(k.to_s)}=#{CGI.escape(params[k].to_s)}"
         end
       end.flatten.join("&")
       
-      if method == :get
-        self.url = "#{url}?#{params_string}"
-      elsif method == :post
+      if method == :post
         self.post_data = params_string
+      else
+        self.url = "#{url}?#{params_string}"
       end
     end
     
